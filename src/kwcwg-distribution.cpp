@@ -99,20 +99,30 @@ inline double cdf_kwcwg(
 		,b);
 }
 
-inline double invcdf_kwcwg(double p, double mu, double sigma,
-	                           bool& throw_warning) {
+inline double invcdf_kwcwg(
+	double p, double alpha, double beta,
+	double gamma, double a, double b, bool &throw_warning)
+{
 #ifdef IEEE_754
-	if (ISNAN(p) || ISNAN(mu) || ISNAN(sigma))
-		return p+mu+sigma;
+	if (ISNAN(x) || ISNAN(mu) || ISNAN(sigma))
+		return x+alpha+beta+gamma+a+b;
 #endif
-	if (sigma <= 0.0 || !VALID_PROB(p)) {
+
+	if(alpha < 0.0 || alpha > 1.0
+	   || beta < 0.0
+	   || gamma < 0.0
+	   || a < 0.0
+	   || b < 0.0
+	   || !VALID_PROB(p))
+	{
 		throw_warning = true;
 		return NAN;
 	}
-	if (p < 0.5)
-		return mu + sigma * log(2.0*p);
-	else
-		return mu - sigma * log(2.0*(1.0-p));
+
+	// Common term
+	double aux = pow(1-pow(1-p,1/b),1/a);
+
+	return pow(log((alpha + (1-alpha)*aux)/(alpha*(1-aux))),1/beta)/gamma;
 }
 
 // Random number generation
