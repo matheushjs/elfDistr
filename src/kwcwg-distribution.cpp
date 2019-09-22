@@ -1,5 +1,4 @@
 #include <Rcpp.h>
-#include "shared.h"
 // [[Rcpp::plugins(cpp11)]]
 
 using std::pow;
@@ -10,6 +9,9 @@ using std::log;
 using std::floor;
 using std::ceil;
 using Rcpp::NumericVector;
+
+#define GETV(x, i)      x[i % x.length()]    // wrapped indexing of vector
+#define VALID_PROB(p)   ((p >= 0.0) && (p <= 1.0))
 
 
 /*
@@ -146,33 +148,48 @@ inline double rng_kwcwg(
 
 // [[Rcpp::export]]
 NumericVector cpp_dkwcwg(
-		const NumericVector& x,
-		const NumericVector& mu,
-		const NumericVector& sigma,
-		const bool& log_prob = false
-	) {
+	const NumericVector& x,
+	const NumericVector& alpha,
+	const NumericVector& beta,
+	const NumericVector& gamma,
+	const NumericVector& a,
+	const NumericVector& b,
+	const bool& log_prob = false
+){
 	
-	if (std::min({x.length(), mu.length(), sigma.length()}) < 1) {
+	if(std::min(
+		{x.length(), alpha.length(), beta.length(),
+		 gamma.length(), a.length(), b.length()}) < 1)
+	{
 		return NumericVector(0);
 	}
 
-	int Nmax = std::max({
+	int maxN = std::max({
 		x.length(),
-		mu.length(),
-		sigma.length()
+		alpha.length(),
+		beta.length(),
+		gamma.length(),
+		a.length(),
+		b.length()
 	});
-	NumericVector p(Nmax);
+	NumericVector p(maxN);
 	
 	bool throw_warning = false;
 
-	for (int i = 0; i < Nmax; i++)
-		p[i] = logpdf_kwcwg(GETV(x, i), GETV(mu, i),
-	                        GETV(sigma, i), throw_warning);
+	for(int i = 0; i < maxN; i++)
+		p[i] = logpdf_kwcwg(
+			GETV(x, i),
+			GETV(alpha, i),
+			GETV(beta, i),
+			GETV(gamma, i),
+			GETV(a, i),
+			GETV(b, i),
+			throw_warning);
 
-	if (!log_prob)
+	if(!log_prob)
 		p = Rcpp::exp(p);
 	
-	if (throw_warning)
+	if(throw_warning)
 		Rcpp::warning("NaNs produced");
 
 	return p;
@@ -181,29 +198,44 @@ NumericVector cpp_dkwcwg(
 
 // [[Rcpp::export]]
 NumericVector cpp_pkwcwg(
-		const NumericVector& x,
-		const NumericVector& mu,
-		const NumericVector& sigma,
-		const bool& lower_tail = true,
-		const bool& log_prob = false
-	) {
-	
-	if (std::min({x.length(), mu.length(), sigma.length()}) < 1) {
+	const NumericVector& x,
+	const NumericVector& alpha,
+	const NumericVector& beta,
+	const NumericVector& gamma,
+	const NumericVector& a,
+	const NumericVector& b,
+	const bool& lower_tail = true,
+	const bool& log_prob = false
+){
+
+	if(std::min(
+		{x.length(), alpha.length(), beta.length(),
+		 gamma.length(), a.length(), b.length()}) < 1)
+	{
 		return NumericVector(0);
 	}
 
-	int Nmax = std::max({
+	int maxN = std::max({
 		x.length(),
-		mu.length(),
-		sigma.length()
+		alpha.length(),
+		beta.length(),
+		gamma.length(),
+		a.length(),
+		b.length()
 	});
-	NumericVector p(Nmax);
-	
+	NumericVector p(maxN);
+
 	bool throw_warning = false;
 
-	for (int i = 0; i < Nmax; i++)
-		p[i] = cdf_kwcwg(GETV(x, i), GETV(mu, i),
-		                   GETV(sigma, i), throw_warning);
+	for (int i = 0; i < maxN; i++)
+		p[i] = cdf_kwcwg(
+			GETV(x, i),
+			GETV(alpha, i),
+			GETV(beta, i),
+			GETV(gamma, i),
+			GETV(a, i),
+			GETV(b, i),
+			throw_warning);
 
 	if (!lower_tail)
 		p = 1.0 - p;
@@ -220,23 +252,31 @@ NumericVector cpp_pkwcwg(
 
 // [[Rcpp::export]]
 NumericVector cpp_qkwcwg(
-		const NumericVector& p,
-		const NumericVector& mu,
-		const NumericVector& sigma,
-		const bool& lower_tail = true,
-		const bool& log_prob = false
-	) {
-	
-	if (std::min({p.length(), mu.length(), sigma.length()}) < 1) {
+	const NumericVector& p,
+	const NumericVector& alpha,
+	const NumericVector& beta,
+	const NumericVector& gamma,
+	const NumericVector& a,
+	const NumericVector& b,
+	const bool& lower_tail = true,
+	const bool& log_prob = false
+){
+	if(std::min(
+		{x.length(), alpha.length(), beta.length(),
+		 gamma.length(), a.length(), b.length()}) < 1)
+	{
 		return NumericVector(0);
 	}
 
-	int Nmax = std::max({
-		p.length(),
-		mu.length(),
-		sigma.length()
+	int maxN = std::max({
+		x.length(),
+		alpha.length(),
+		beta.length(),
+		gamma.length(),
+		a.length(),
+		b.length()
 	});
-	NumericVector q(Nmax);
+	NumericVector q(maxN);
 	NumericVector pp = Rcpp::clone(p);
 	
 	bool throw_warning = false;
@@ -247,9 +287,15 @@ NumericVector cpp_qkwcwg(
 	if (!lower_tail)
 		pp = 1.0 - pp;
 
-	for (int i = 0; i < Nmax; i++)
-		q[i] = invcdf_kwcwg(GETV(pp, i), GETV(mu, i),
-		                      GETV(sigma, i), throw_warning);
+	for (int i = 0; i < maxN; i++)
+		q[i] = invcdf_kwcwg(
+			GETV(pp, i),
+			GETV(alpha, i),
+			GETV(beta, i),
+			GETV(gamma, i),
+			GETV(a, i),
+			GETV(b, i),
+			throw_warning);
 	
 	if (throw_warning)
 		Rcpp::warning("NaNs produced");
@@ -257,15 +303,19 @@ NumericVector cpp_qkwcwg(
 	return q;
 }
 
-
 // [[Rcpp::export]]
 NumericVector cpp_rkwcwg(
-		const int& n,
-		const NumericVector& mu,
-		const NumericVector& sigma
-	) {
-	
-	if (std::min({mu.length(), sigma.length()}) < 1) {
+	const int& n,
+	const NumericVector& alpha,
+	const NumericVector& beta,
+	const NumericVector& gamma,
+	const NumericVector& a,
+	const NumericVector& b
+){
+	if(std::min(
+		{x.length(), alpha.length(), beta.length(),
+		 gamma.length(), a.length(), b.length()}) < 1)
+	{
 		Rcpp::warning("NAs produced");
 		return NumericVector(n, NA_REAL);
 	}
@@ -275,8 +325,13 @@ NumericVector cpp_rkwcwg(
 	bool throw_warning = false;
 
 	for (int i = 0; i < n; i++)
-		x[i] = rng_kwcwg(GETV(mu, i), GETV(sigma, i),
-		                   throw_warning);
+		x[i] = rng_kwcwg(
+			GETV(alpha, i),
+			GETV(beta, i),
+			GETV(gamma, i),
+			GETV(a, i),
+			GETV(b, i),
+			throw_warning);
 	
 	if (throw_warning)
 		Rcpp::warning("NAs produced");
