@@ -45,7 +45,7 @@ inline double logpdf_kwcwg(
 {
 #ifdef IEEE_754
 	if(ISNAN(x) || ISNAN(alpha) || ISNAN(beta) || ISNAN(gamma) || ISNAN(a) || ISNAN(b))
-		return p+alpha+beta+gamma+a+b;
+		return x+alpha+beta+gamma+a+b;
 #endif
 
 	if(alpha < 0.0 || alpha > 1.0
@@ -59,7 +59,7 @@ inline double logpdf_kwcwg(
 	}
 
 	// Common term in the equation
-	double aux1 = exp(-(gamma*x)**beta);
+	double aux1 = exp(-pow(gamma*x,beta));
 
 	// Here we will factor f(x) as being A * (B^(a-1)/C^(a-1)) * (1 - D/E)^(b-1)
 	double A = pow(alpha,a) * beta * gamma * a * b * pow(gamma*x,beta-1) * aux1;
@@ -79,7 +79,7 @@ inline double cdf_kwcwg(
 {
 #ifdef IEEE_754
 	if(ISNAN(x) || ISNAN(alpha) || ISNAN(beta) || ISNAN(gamma) || ISNAN(a) || ISNAN(b))
-		return p+alpha+beta+gamma+a+b;
+		return x+alpha+beta+gamma+a+b;
 #endif
 
 	if(alpha < 0.0 || alpha > 1.0
@@ -132,12 +132,12 @@ inline double rng_kwcwg(
 	double alpha, double beta, double gamma,
 	double a, double b, bool &throw_warning)
 {
-	if(ISNAN(p) || ISNAN(alpha) || ISNAN(beta) || ISNAN(gamma) || ISNAN(a) || ISNAN(b)
+	if(ISNAN(alpha) || ISNAN(beta) || ISNAN(gamma) || ISNAN(a) || ISNAN(b)
 	   || alpha < 0.0 || alpha > 1.0
 	   || beta < 0.0
 	   || gamma < 0.0
 	   || a < 0.0
-	   || b < 0.0
+	   || b < 0.0)
 	{
 		throw_warning = true;
 		return NAN;
@@ -262,14 +262,14 @@ NumericVector cpp_qkwcwg(
 	const bool& log_prob = false
 ){
 	if(std::min(
-		{x.length(), alpha.length(), beta.length(),
+		{p.length(), alpha.length(), beta.length(),
 		 gamma.length(), a.length(), b.length()}) < 1)
 	{
 		return NumericVector(0);
 	}
 
 	int maxN = std::max({
-		x.length(),
+		p.length(),
 		alpha.length(),
 		beta.length(),
 		gamma.length(),
@@ -313,7 +313,7 @@ NumericVector cpp_rkwcwg(
 	const NumericVector& b
 ){
 	if(std::min(
-		{x.length(), alpha.length(), beta.length(),
+		{alpha.length(), beta.length(),
 		 gamma.length(), a.length(), b.length()}) < 1)
 	{
 		Rcpp::warning("NAs produced");
