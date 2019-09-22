@@ -13,22 +13,28 @@ using Rcpp::NumericVector;
 
 
 /*
- *  Laplace distribution
+ *  KW-CWG distribution
  *
  *  Values:
  *  x
  *
  *  Parameters:
- *  mu
- *  sigma > 0
+ *  alpha in [0, 1]
+ *  beta > 0
+ *  gamma > 0
+ *  a > 0
+ *  b > 0
  *
- *  z = (x-mu)/sigma
- *  f(x)    = 1/(2*sigma) * exp(-|z|)
- *  F(x)    = { 1/2 * exp(z)                 if   x < mu
- *            { 1 - 1/2 * exp(z)             otherwise
- *  F^-1(p) = { mu + sigma * log(2*p)        if p <= 0.5
- *            { mu - sigma * log(2*(1-p))    otherwise
- *
+ * TODO: Recheck this
+ *   z = alpha**a * beta * gamma * a * b * (gamma * x)**(beta-1) * exp(-(gamma*x)**beta) *
+ *   (
+ *      (1 - exp(-(gamma*x)**beta))**(a-1) /
+ *      (alpha + (1 - alpha)*exp(-(gamma*x)**beta))**(a+1)
+ *   ) *
+ *   (
+ *     1 - (alpha**a*(1 - exp(-(gamma*x)**beta))**a) /
+ *     (alpha + (1-alpha)*exp(-(gamma*x)**beta))**a
+ *   )**(b-1)
  */
 
 inline double logpdf_laplace(double x, double mu, double sigma,
