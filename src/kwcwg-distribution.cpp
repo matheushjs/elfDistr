@@ -126,19 +126,23 @@ inline double invcdf_kwcwg(
 }
 
 // Random number generation
-inline double rng_kwcwg(double mu, double sigma, bool& throw_warning) {
-	if (ISNAN(mu) || ISNAN(sigma) || sigma <= 0.0) {
+inline double rng_kwcwg(
+	double alpha, double beta, double gamma,
+	double a, double b, bool &throw_warning)
+{
+	if(ISNAN(p) || ISNAN(alpha) || ISNAN(beta) || ISNAN(gamma) || ISNAN(a) || ISNAN(b)
+	   || alpha < 0.0 || alpha > 1.0
+	   || beta < 0.0
+	   || gamma < 0.0
+	   || a < 0.0
+	   || b < 0.0
+	{
 		throw_warning = true;
-		return NA_REAL;
+		return NAN;
 	}
-	// this is slower
-	// double u = R::runif(-0.5, 0.5);
-	// return mu + sigma * R::sign(u) * log(1.0 - 2.0*abs(u));
-	double u = R::exp_rand();
-	double s = rng_sign();
-	return u*s * sigma + mu;
-}
 
+	return invcdf_kwcwg(R::runif(0, 1), alpha, beta, gamma, a, b, throw_warning);
+}
 
 // [[Rcpp::export]]
 NumericVector cpp_dkwcwg(
