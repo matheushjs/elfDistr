@@ -42,8 +42,8 @@ inline double logpdf_kwcwg(
 	double gamma, double a, double b, bool &throw_warning)
 {
 #ifdef IEEE_754
-	if (ISNAN(x) || ISNAN(mu) || ISNAN(sigma))
-		return x+alpha+beta+gamma+a+b;
+	if(ISNAN(x) || ISNAN(alpha) || ISNAN(beta) || ISNAN(gamma) || ISNAN(a) || ISNAN(b))
+		return p+alpha+beta+gamma+a+b;
 #endif
 
 	if(alpha < 0.0 || alpha > 1.0
@@ -76,8 +76,8 @@ inline double cdf_kwcwg(
 	double gamma, double a, double b, bool &throw_warning)
 {
 #ifdef IEEE_754
-	if (ISNAN(x) || ISNAN(mu) || ISNAN(sigma))
-		return x+alpha+beta+gamma+a+b;
+	if(ISNAN(x) || ISNAN(alpha) || ISNAN(beta) || ISNAN(gamma) || ISNAN(a) || ISNAN(b))
+		return p+alpha+beta+gamma+a+b;
 #endif
 
 	if(alpha < 0.0 || alpha > 1.0
@@ -104,8 +104,8 @@ inline double invcdf_kwcwg(
 	double gamma, double a, double b, bool &throw_warning)
 {
 #ifdef IEEE_754
-	if (ISNAN(x) || ISNAN(mu) || ISNAN(sigma))
-		return x+alpha+beta+gamma+a+b;
+	if(ISNAN(p) || ISNAN(alpha) || ISNAN(beta) || ISNAN(gamma) || ISNAN(a) || ISNAN(b))
+		return p+alpha+beta+gamma+a+b;
 #endif
 
 	if(alpha < 0.0 || alpha > 1.0
