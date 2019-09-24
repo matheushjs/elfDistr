@@ -7,7 +7,7 @@ using namespace Rcpp;
 
 // cpp_dkwcwg
 NumericVector cpp_dkwcwg(const NumericVector& x, const NumericVector& alpha, const NumericVector& beta, const NumericVector& gamma, const NumericVector& a, const NumericVector& b, const bool& log_prob);
-RcppExport SEXP _extraDistr_cpp_dkwcwg(SEXP xSEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP gammaSEXP, SEXP aSEXP, SEXP bSEXP, SEXP log_probSEXP) {
+RcppExport SEXP _elfDistr_cpp_dkwcwg(SEXP xSEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP gammaSEXP, SEXP aSEXP, SEXP bSEXP, SEXP log_probSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -24,7 +24,7 @@ END_RCPP
 }
 // cpp_pkwcwg
 NumericVector cpp_pkwcwg(const NumericVector& x, const NumericVector& alpha, const NumericVector& beta, const NumericVector& gamma, const NumericVector& a, const NumericVector& b, const bool& lower_tail, const bool& log_prob);
-RcppExport SEXP _extraDistr_cpp_pkwcwg(SEXP xSEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP gammaSEXP, SEXP aSEXP, SEXP bSEXP, SEXP lower_tailSEXP, SEXP log_probSEXP) {
+RcppExport SEXP _elfDistr_cpp_pkwcwg(SEXP xSEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP gammaSEXP, SEXP aSEXP, SEXP bSEXP, SEXP lower_tailSEXP, SEXP log_probSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -42,7 +42,7 @@ END_RCPP
 }
 // cpp_qkwcwg
 NumericVector cpp_qkwcwg(const NumericVector& p, const NumericVector& alpha, const NumericVector& beta, const NumericVector& gamma, const NumericVector& a, const NumericVector& b, const bool& lower_tail, const bool& log_prob);
-RcppExport SEXP _extraDistr_cpp_qkwcwg(SEXP pSEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP gammaSEXP, SEXP aSEXP, SEXP bSEXP, SEXP lower_tailSEXP, SEXP log_probSEXP) {
+RcppExport SEXP _elfDistr_cpp_qkwcwg(SEXP pSEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP gammaSEXP, SEXP aSEXP, SEXP bSEXP, SEXP lower_tailSEXP, SEXP log_probSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -60,7 +60,7 @@ END_RCPP
 }
 // cpp_rkwcwg
 NumericVector cpp_rkwcwg(const int& n, const NumericVector& alpha, const NumericVector& beta, const NumericVector& gamma, const NumericVector& a, const NumericVector& b);
-RcppExport SEXP _extraDistr_cpp_rkwcwg(SEXP nSEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP gammaSEXP, SEXP aSEXP, SEXP bSEXP) {
+RcppExport SEXP _elfDistr_cpp_rkwcwg(SEXP nSEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP gammaSEXP, SEXP aSEXP, SEXP bSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -76,14 +76,14 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_extraDistr_cpp_dkwcwg", (DL_FUNC) &_extraDistr_cpp_dkwcwg, 7},
-    {"_extraDistr_cpp_pkwcwg", (DL_FUNC) &_extraDistr_cpp_pkwcwg, 8},
-    {"_extraDistr_cpp_qkwcwg", (DL_FUNC) &_extraDistr_cpp_qkwcwg, 8},
-    {"_extraDistr_cpp_rkwcwg", (DL_FUNC) &_extraDistr_cpp_rkwcwg, 6},
+    {"_elfDistr_cpp_dkwcwg", (DL_FUNC) &_elfDistr_cpp_dkwcwg, 7},
+    {"_elfDistr_cpp_pkwcwg", (DL_FUNC) &_elfDistr_cpp_pkwcwg, 8},
+    {"_elfDistr_cpp_qkwcwg", (DL_FUNC) &_elfDistr_cpp_qkwcwg, 8},
+    {"_elfDistr_cpp_rkwcwg", (DL_FUNC) &_elfDistr_cpp_rkwcwg, 6},
     {NULL, NULL, 0}
 };
 
-RcppExport void R_init_extraDistr(DllInfo *dll) {
+RcppExport void R_init_elfDistr(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }
