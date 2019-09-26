@@ -2,18 +2,18 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 cpp_dkwcwg <- function(x, alpha, beta, gamma, a, b, log_prob = FALSE) {
-    .Call('_elfDistr_cpp_dkwcwg', PACKAGE = 'elfDistr', x, alpha, beta, gamma, a, b, log_prob)
+    .Call(`_elfDistr_cpp_dkwcwg`, x, alpha, beta, gamma, a, b, log_prob)
 }
 
 cpp_pkwcwg <- function(x, alpha, beta, gamma, a, b, lower_tail = TRUE, log_prob = FALSE) {
-    .Call('_elfDistr_cpp_pkwcwg', PACKAGE = 'elfDistr', x, alpha, beta, gamma, a, b, lower_tail, log_prob)
+    .Call(`_elfDistr_cpp_pkwcwg`, x, alpha, beta, gamma, a, b, lower_tail, log_prob)
 }
 
 cpp_qkwcwg <- function(p, alpha, beta, gamma, a, b, lower_tail = TRUE, log_prob = FALSE) {
-    .Call('_elfDistr_cpp_qkwcwg', PACKAGE = 'elfDistr', p, alpha, beta, gamma, a, b, lower_tail, log_prob)
+    .Call(`_elfDistr_cpp_qkwcwg`, p, alpha, beta, gamma, a, b, lower_tail, log_prob)
 }
 
 cpp_rkwcwg <- function(n, alpha, beta, gamma, a, b) {
-    .Call('_elfDistr_cpp_rkwcwg', PACKAGE = 'elfDistr', n, alpha, beta, gamma, a, b)
+    .Call(`_elfDistr_cpp_rkwcwg`, n, alpha, beta, gamma, a, b)
 }
 

@@ -9,7 +9,7 @@
 #' This package follows naming convention that is consistent with base R,
 #' where density (or probability mass) functions, distribution functions,
 #' quantile functions and random generation functions names are followed by
-#' \code{d}*, \code{p}*, \code{q}*, and \code{r}* prefixes.
+#' \code{d}, \code{p}, \code{q}, and \code{r} prefixes.
 #' 
 #' Behaviour of the functions is consistent with base R, where for
 #' not valid parameters values \code{NaN}'s are returned, while
