@@ -19,7 +19,9 @@
 #' Probability density function
 #' \deqn{
 #'    f(x) = \alpha^a \beta \gamma a b (\gamma x)^{\beta - 1} \exp[-(\gamma x)^\beta] \cdot
-#'    \frac{\{1 - \exp[-(\gamma x)^\beta]\}^{a-1}}{\{ \alpha + (1 - \alpha) \exp[-(\gamma x)^\beta] \}^{a+1}} \cdot \\
+#'    \frac{\{1 - \exp[-(\gamma x)^\beta]\}^{a-1}}{\{ \alpha + (1 - \alpha) \exp[-(\gamma x)^\beta] \}^{a+1}} \cdot
+#' }
+#' \deqn{
 #'    \cdot \bigg\{ 1 - \frac{\alpha^a[1 - \exp[-(\gamma x)^\beta]]^a}{\{ \alpha + (1 - \alpha) \exp[-(\gamma x)^\beta] \}^a} \bigg\}
 #' }
 #'
