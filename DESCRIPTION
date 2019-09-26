@@ -20,8 +20,10 @@ LazyData: true
 URL: https://github.com/matheushjs/elfDistr
 BugReports: https://github.com/matheushjs/elfDistr/issues
 RoxygenNote: 6.1.1
+Depends: R (>= 3.1.0)
 LinkingTo: Rcpp
 Imports: Rcpp
+SystemRequirements: C++11
 NeedsCompilation: yes
 Suggests: 
     testthat
