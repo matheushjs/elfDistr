@@ -1,5 +1,6 @@
 #include <Rcpp.h>
 // [[Rcpp::plugins(cpp11)]]
+// [[Rcpp::plugins(openmp)]]
 
 using std::pow;
 using std::sqrt;
@@ -9,6 +10,7 @@ using std::log;
 using std::floor;
 using std::ceil;
 using Rcpp::NumericVector;
+using Rcpp::Rcout;
 
 #define GETV(x, i)      x[i % x.length()]    // wrapped indexing of vector
 #define VALID_PROB(p)   ((p >= 0.0) && (p <= 1.0))
@@ -156,27 +158,121 @@ NumericVector cpp_dkwcwg(
 	const NumericVector& b,
 	const bool& log_prob = false
 ){
+	const unsigned int xL = x.length();
+	const unsigned int alphaL = alpha.length();
+	const unsigned int betaL = beta.length();
+	const unsigned int gammaL = gamma.length();
+	const unsigned int aL = a.length();
+	const unsigned int bL = b.length();
 	
-	if(std::min(
-		{x.length(), alpha.length(), beta.length(),
-		 gamma.length(), a.length(), b.length()}) < 1)
+	if(std::min({ xL, alphaL, betaL, gammaL, aL, bL }) < 1)
 	{
 		return NumericVector(0);
 	}
 
-	int maxN = std::max({
-		x.length(),
-		alpha.length(),
-		beta.length(),
-		gamma.length(),
-		a.length(),
-		b.length()
-	});
+	int maxN = std::max({ xL, alphaL, betaL, gammaL, aL, bL });
 	NumericVector p(maxN);
 	
 	bool throw_warning = false;
 
-	for(int i = 0; i < maxN; i++)
+	const int STRIDE = 8;
+	int lim = maxN / STRIDE;
+
+	#pragma omp parallel for
+	for(int i = 0; i < lim*STRIDE; i += STRIDE){
+		// Read parameters
+		double xX[STRIDE];
+		double alphaX[STRIDE];
+		double betaX[STRIDE];
+		double gammaX[STRIDE];
+		double aX[STRIDE];
+		double bX[STRIDE];
+
+		// Common result
+		double aux[STRIDE];
+
+		// Intermediate results
+		double A[STRIDE];
+		double B[STRIDE];
+		double C[STRIDE];
+		double D[STRIDE];
+		double E[STRIDE];
+
+		#pragma omp simd
+		for(int j = 0; j < STRIDE; j++){
+			const int idx = i + j;
+			xX[j]     = x[idx%xL];
+			alphaX[j] = alpha[idx%alphaL];
+			betaX[j]  = beta[idx%betaL];
+			gammaX[j] = gamma[idx%gammaL];
+			aX[j]     = a[idx%aL];
+			bX[j]     = b[idx%bL];
+		}
+
+		#pragma omp simd
+		for(int j = 0; j < STRIDE; j++){
+			const int idx = i + j;
+			aux[j] = exp(-pow(gammaX[j]*xX[j],betaX[j]));
+		}
+
+		#pragma omp simd
+		for(int j = 0; j < STRIDE; j++){
+			const int idx = i + j;
+			A[j] = pow(alphaX[j],aX[j]) * betaX[j] * gammaX[j] * aX[j] * bX[j] * pow(gammaX[j]*xX[j],betaX[j]-1) * aux[j];
+		}
+
+		#pragma omp simd
+		for(int j = 0; j < STRIDE; j++){
+			const int idx = i + j;
+			B[j] = 1 - aux[j];
+		}
+
+		#pragma omp simd
+		for(int j = 0; j < STRIDE; j++){
+			const int idx = i + j;
+			C[j] = alphaX[j] + (1-alphaX[j])*aux[j];
+		}
+
+		#pragma omp simd
+		for(int j = 0; j < STRIDE; j++){
+			const int idx = i + j;
+			D[j] = pow(alphaX[j],aX[j]) * pow(1-aux[j],aX[j]);
+		}
+
+		#pragma omp simd
+		for(int j = 0; j < STRIDE; j++){
+			const int idx = i + j;
+			E[j] = pow(alphaX[j] + (1-alphaX[j])*aux[j],aX[j]);
+		}
+
+		#pragma omp simd
+		for(int j = 0; j < STRIDE; j++){
+			const int idx = i + j;
+			p[idx] = log(A[j]) + (aX[j]-1)*log(B[j]) - (aX[j]+1)*log(C[j]) + (bX[j]-1)*log(1 - D[j]/E[j]);
+		}
+
+		for(int j = 0; j < STRIDE; j++){
+			const int idx = i + j;
+			#ifdef IEEE_754
+			if(ISNAN(xX[j]) || ISNAN(alphaX[j]) || ISNAN(betaX[j]) || ISNAN(gammaX[j]) || ISNAN(aX[j]) || ISNAN(bX[j])){
+				throw_warning = true;
+				p[idx] = NAN;
+			} else // XXX: ATTENTION HERE!!
+			#endif
+
+			if(alphaX[j] < 0.0 || alphaX[j] > 1.0
+			   || betaX[j] < 0.0
+			   || gammaX[j] < 0.0
+			   || aX[j] < 0.0
+			   || bX[j] < 0.0)
+			{
+				throw_warning = true;
+				p[idx] = NAN;
+			}
+		}
+	}
+
+	for(int i = lim*STRIDE; i < maxN; i++)
 		p[i] = logpdf_kwcwg(
 			GETV(x, i),
 			GETV(alpha, i),
