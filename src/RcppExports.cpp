@@ -6,71 +6,71 @@
 using namespace Rcpp;
 
 // cpp_dkwcwg
-NumericVector cpp_dkwcwg(const NumericVector& x, const NumericVector& alpha, const NumericVector& beta, const NumericVector& gamma, const NumericVector& a, const NumericVector& b, const bool& log_prob);
-RcppExport SEXP _elfDistr_cpp_dkwcwg(SEXP xSEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP gammaSEXP, SEXP aSEXP, SEXP bSEXP, SEXP log_probSEXP) {
+NumericVector cpp_dkwcwg(const NumericVector& vx, const NumericVector& valpha, const NumericVector& vbeta, const NumericVector& vgamma, const NumericVector& va, const NumericVector& vb, const bool& log_prob);
+RcppExport SEXP _elfDistr_cpp_dkwcwg(SEXP vxSEXP, SEXP valphaSEXP, SEXP vbetaSEXP, SEXP vgammaSEXP, SEXP vaSEXP, SEXP vbSEXP, SEXP log_probSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const NumericVector& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< const NumericVector& >::type alpha(alphaSEXP);
-    Rcpp::traits::input_parameter< const NumericVector& >::type beta(betaSEXP);
-    Rcpp::traits::input_parameter< const NumericVector& >::type gamma(gammaSEXP);
-    Rcpp::traits::input_parameter< const NumericVector& >::type a(aSEXP);
-    Rcpp::traits::input_parameter< const NumericVector& >::type b(bSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type vx(vxSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type valpha(valphaSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type vbeta(vbetaSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type vgamma(vgammaSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type va(vaSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type vb(vbSEXP);
     Rcpp::traits::input_parameter< const bool& >::type log_prob(log_probSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_dkwcwg(x, alpha, beta, gamma, a, b, log_prob));
+    rcpp_result_gen = Rcpp::wrap(cpp_dkwcwg(vx, valpha, vbeta, vgamma, va, vb, log_prob));
     return rcpp_result_gen;
 END_RCPP
 }
 // cpp_pkwcwg
-NumericVector cpp_pkwcwg(const NumericVector& x, const NumericVector& alpha, const NumericVector& beta, const NumericVector& gamma, const NumericVector& a, const NumericVector& b, const bool& lower_tail, const bool& log_prob);
-RcppExport SEXP _elfDistr_cpp_pkwcwg(SEXP xSEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP gammaSEXP, SEXP aSEXP, SEXP bSEXP, SEXP lower_tailSEXP, SEXP log_probSEXP) {
+NumericVector cpp_pkwcwg(const NumericVector& vx, const NumericVector& valpha, const NumericVector& vbeta, const NumericVector& vgamma, const NumericVector& va, const NumericVector& vb, const bool& lower_tail, const bool& log_prob);
+RcppExport SEXP _elfDistr_cpp_pkwcwg(SEXP vxSEXP, SEXP valphaSEXP, SEXP vbetaSEXP, SEXP vgammaSEXP, SEXP vaSEXP, SEXP vbSEXP, SEXP lower_tailSEXP, SEXP log_probSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const NumericVector& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< const NumericVector& >::type alpha(alphaSEXP);
-    Rcpp::traits::input_parameter< const NumericVector& >::type beta(betaSEXP);
-    Rcpp::traits::input_parameter< const NumericVector& >::type gamma(gammaSEXP);
-    Rcpp::traits::input_parameter< const NumericVector& >::type a(aSEXP);
-    Rcpp::traits::input_parameter< const NumericVector& >::type b(bSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type vx(vxSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type valpha(valphaSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type vbeta(vbetaSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type vgamma(vgammaSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type va(vaSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type vb(vbSEXP);
     Rcpp::traits::input_parameter< const bool& >::type lower_tail(lower_tailSEXP);
     Rcpp::traits::input_parameter< const bool& >::type log_prob(log_probSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_pkwcwg(x, alpha, beta, gamma, a, b, lower_tail, log_prob));
+    rcpp_result_gen = Rcpp::wrap(cpp_pkwcwg(vx, valpha, vbeta, vgamma, va, vb, lower_tail, log_prob));
     return rcpp_result_gen;
 END_RCPP
 }
 // cpp_qkwcwg
-NumericVector cpp_qkwcwg(const NumericVector& p, const NumericVector& alpha, const NumericVector& beta, const NumericVector& gamma, const NumericVector& a, const NumericVector& b, const bool& lower_tail, const bool& log_prob);
-RcppExport SEXP _elfDistr_cpp_qkwcwg(SEXP pSEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP gammaSEXP, SEXP aSEXP, SEXP bSEXP, SEXP lower_tailSEXP, SEXP log_probSEXP) {
+NumericVector cpp_qkwcwg(const NumericVector& vp, const NumericVector& valpha, const NumericVector& vbeta, const NumericVector& vgamma, const NumericVector& va, const NumericVector& vb, const bool& lower_tail, const bool& log_prob);
+RcppExport SEXP _elfDistr_cpp_qkwcwg(SEXP vpSEXP, SEXP valphaSEXP, SEXP vbetaSEXP, SEXP vgammaSEXP, SEXP vaSEXP, SEXP vbSEXP, SEXP lower_tailSEXP, SEXP log_probSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const NumericVector& >::type p(pSEXP);
-    Rcpp::traits::input_parameter< const NumericVector& >::type alpha(alphaSEXP);
-    Rcpp::traits::input_parameter< const NumericVector& >::type beta(betaSEXP);
-    Rcpp::traits::input_parameter< const NumericVector& >::type gamma(gammaSEXP);
-    Rcpp::traits::input_parameter< const NumericVector& >::type a(aSEXP);
-    Rcpp::traits::input_parameter< const NumericVector& >::type b(bSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type vp(vpSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type valpha(valphaSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type vbeta(vbetaSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type vgamma(vgammaSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type va(vaSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type vb(vbSEXP);
     Rcpp::traits::input_parameter< const bool& >::type lower_tail(lower_tailSEXP);
     Rcpp::traits::input_parameter< const bool& >::type log_prob(log_probSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_qkwcwg(p, alpha, beta, gamma, a, b, lower_tail, log_prob));
+    rcpp_result_gen = Rcpp::wrap(cpp_qkwcwg(vp, valpha, vbeta, vgamma, va, vb, lower_tail, log_prob));
     return rcpp_result_gen;
 END_RCPP
 }
 // cpp_rkwcwg
-NumericVector cpp_rkwcwg(const int& n, const NumericVector& alpha, const NumericVector& beta, const NumericVector& gamma, const NumericVector& a, const NumericVector& b);
-RcppExport SEXP _elfDistr_cpp_rkwcwg(SEXP nSEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP gammaSEXP, SEXP aSEXP, SEXP bSEXP) {
+NumericVector cpp_rkwcwg(const int& n, const NumericVector& valpha, const NumericVector& vbeta, const NumericVector& vgamma, const NumericVector& va, const NumericVector& vb);
+RcppExport SEXP _elfDistr_cpp_rkwcwg(SEXP nSEXP, SEXP valphaSEXP, SEXP vbetaSEXP, SEXP vgammaSEXP, SEXP vaSEXP, SEXP vbSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const int& >::type n(nSEXP);
-    Rcpp::traits::input_parameter< const NumericVector& >::type alpha(alphaSEXP);
-    Rcpp::traits::input_parameter< const NumericVector& >::type beta(betaSEXP);
-    Rcpp::traits::input_parameter< const NumericVector& >::type gamma(gammaSEXP);
-    Rcpp::traits::input_parameter< const NumericVector& >::type a(aSEXP);
-    Rcpp::traits::input_parameter< const NumericVector& >::type b(bSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_rkwcwg(n, alpha, beta, gamma, a, b));
+    Rcpp::traits::input_parameter< const NumericVector& >::type valpha(valphaSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type vbeta(vbetaSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type vgamma(vgammaSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type va(vaSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type vb(vbSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_rkwcwg(n, valpha, vbeta, vgamma, va, vb));
     return rcpp_result_gen;
 END_RCPP
 }

@@ -42,23 +42,8 @@ using Rcpp::Rcout;
 
 inline double logpdf_kwcwg(
 	double x, double alpha, double beta,
-	double gamma, double a, double b, bool &throw_warning)
+	double gamma, double a, double b)
 {
-#ifdef IEEE_754
-	if(ISNAN(x) || ISNAN(alpha) || ISNAN(beta) || ISNAN(gamma) || ISNAN(a) || ISNAN(b))
-		return x+alpha+beta+gamma+a+b;
-#endif
-
-	if(alpha < 0.0 || alpha > 1.0
-	   || beta < 0.0
-	   || gamma < 0.0
-	   || a < 0.0
-	   || b < 0.0)
-	{
-		throw_warning = true;
-		return NAN;
-	}
-
 	// Common term in the equation
 	double aux1 = exp(-pow(gamma*x,beta));
 
@@ -76,23 +61,8 @@ inline double logpdf_kwcwg(
 
 inline double cdf_kwcwg(
 	double x, double alpha, double beta,
-	double gamma, double a, double b, bool &throw_warning)
+	double gamma, double a, double b)
 {
-#ifdef IEEE_754
-	if(ISNAN(x) || ISNAN(alpha) || ISNAN(beta) || ISNAN(gamma) || ISNAN(a) || ISNAN(b))
-		return x+alpha+beta+gamma+a+b;
-#endif
-
-	if(alpha < 0.0 || alpha > 1.0
-	   || beta < 0.0
-	   || gamma < 0.0
-	   || a < 0.0
-	   || b < 0.0)
-	{
-		throw_warning = true;
-		return NAN;
-	}
-
 	return 1-
 		pow(1-pow(alpha,a)*
 			pow(
@@ -104,24 +74,8 @@ inline double cdf_kwcwg(
 
 inline double invcdf_kwcwg(
 	double p, double alpha, double beta,
-	double gamma, double a, double b, bool &throw_warning)
+	double gamma, double a, double b)
 {
-#ifdef IEEE_754
-	if(ISNAN(p) || ISNAN(alpha) || ISNAN(beta) || ISNAN(gamma) || ISNAN(a) || ISNAN(b))
-		return p+alpha+beta+gamma+a+b;
-#endif
-
-	if(alpha < 0.0 || alpha > 1.0
-	   || beta < 0.0
-	   || gamma < 0.0
-	   || a < 0.0
-	   || b < 0.0
-	   || !VALID_PROB(p))
-	{
-		throw_warning = true;
-		return NAN;
-	}
-
 	// Common term
 	double aux = pow(1-pow(1-p,1/b),1/a);
 
@@ -131,153 +85,67 @@ inline double invcdf_kwcwg(
 // Random number generation
 inline double rng_kwcwg(
 	double alpha, double beta, double gamma,
-	double a, double b, bool &throw_warning)
+	double a, double b)
 {
-	if(ISNAN(alpha) || ISNAN(beta) || ISNAN(gamma) || ISNAN(a) || ISNAN(b)
-	   || alpha < 0.0 || alpha > 1.0
-	   || beta < 0.0
-	   || gamma < 0.0
-	   || a < 0.0
-	   || b < 0.0)
-	{
-		throw_warning = true;
-		return NAN;
-	}
-
-	return invcdf_kwcwg(R::runif(0, 1), alpha, beta, gamma, a, b, throw_warning);
+	return invcdf_kwcwg(R::runif(0, 1), alpha, beta, gamma, a, b);
 }
 
 // [[Rcpp::export]]
 NumericVector cpp_dkwcwg(
-	const NumericVector& x,
-	const NumericVector& alpha,
-	const NumericVector& beta,
-	const NumericVector& gamma,
-	const NumericVector& a,
-	const NumericVector& b,
+	const NumericVector& vx,
+	const NumericVector& valpha,
+	const NumericVector& vbeta,
+	const NumericVector& vgamma,
+	const NumericVector& va,
+	const NumericVector& vb,
 	const bool& log_prob = false
 ){
-	const unsigned int xL = x.length();
-	const unsigned int alphaL = alpha.length();
-	const unsigned int betaL = beta.length();
-	const unsigned int gammaL = gamma.length();
-	const unsigned int aL = a.length();
-	const unsigned int bL = b.length();
 	
-	if(std::min({ xL, alphaL, betaL, gammaL, aL, bL }) < 1)
+	if(std::min(
+		{vx.length(), valpha.length(), vbeta.length(),
+		 vgamma.length(), va.length(), vb.length()}) < 1)
+	{
 		return NumericVector(0);
+	}
 
-	int maxN = std::max({ xL, alphaL, betaL, gammaL, aL, bL });
-	NumericVector p = Rcpp::no_init(maxN);
+	int maxN = std::max({
+		vx.length(),
+		valpha.length(),
+		vbeta.length(),
+		vgamma.length(),
+		va.length(),
+		vb.length()
+	});
+	NumericVector p(maxN);
 	
 	bool throw_warning = false;
 
-	const int STRIDE = 8;
-	int lim = maxN / STRIDE;
+	for(int i = 0; i < maxN; i++){
+		const double x = GETV(vx, i);
+		const double alpha = GETV(valpha, i);
+		const double beta = GETV(vbeta, i);
+		const double gamma = GETV(vgamma, i);
+		const double a = GETV(va, i);
+		const double b = GETV(vb, i);
 
-	#pragma omp parallel for
-	for(int i = 0; i < lim*STRIDE; i += STRIDE){
-		// Read parameters
-		double xX[STRIDE];
-		double alphaX[STRIDE];
-		double betaX[STRIDE];
-		double gammaX[STRIDE];
-		double aX[STRIDE];
-		double bX[STRIDE];
-
-		// Common result
-		double aux[STRIDE];
-
-		// Intermediate results
-		double A[STRIDE];
-		double B[STRIDE];
-		double C[STRIDE];
-		double D[STRIDE];
-		double E[STRIDE];
-
-		#pragma omp simd
-		for(int j = 0; j < STRIDE; j++){
-			const int idx = i + j;
-			xX[j]     = x[idx%xL];
-			alphaX[j] = alpha[idx%alphaL];
-			betaX[j]  = beta[idx%betaL];
-			gammaX[j] = gamma[idx%gammaL];
-			aX[j]     = a[idx%aL];
-			bX[j]     = b[idx%bL];
-		}
-
-		#pragma omp simd
-		for(int j = 0; j < STRIDE; j++){
-			const int idx = i + j;
-			aux[j] = exp(-pow(gammaX[j]*xX[j],betaX[j]));
-		}
-
-		#pragma omp simd
-		for(int j = 0; j < STRIDE; j++){
-			const int idx = i + j;
-			A[j] = pow(alphaX[j],aX[j]) * betaX[j] * gammaX[j] * aX[j] * bX[j] * pow(gammaX[j]*xX[j],betaX[j]-1) * aux[j];
-		}
-
-		#pragma omp simd
-		for(int j = 0; j < STRIDE; j++){
-			const int idx = i + j;
-			B[j] = 1 - aux[j];
-		}
-
-		#pragma omp simd
-		for(int j = 0; j < STRIDE; j++){
-			const int idx = i + j;
-			C[j] = alphaX[j] + (1-alphaX[j])*aux[j];
-		}
-
-		#pragma omp simd
-		for(int j = 0; j < STRIDE; j++){
-			const int idx = i + j;
-			D[j] = pow(alphaX[j],aX[j]) * pow(1-aux[j],aX[j]);
-		}
-
-		#pragma omp simd
-		for(int j = 0; j < STRIDE; j++){
-			const int idx = i + j;
-			E[j] = pow(alphaX[j] + (1-alphaX[j])*aux[j],aX[j]);
-		}
-
-		#pragma omp simd
-		for(int j = 0; j < STRIDE; j++){
-			const int idx = i + j;
-			p[idx] = log(A[j]) + (aX[j]-1)*log(B[j]) - (aX[j]+1)*log(C[j]) + (bX[j]-1)*log(1 - D[j]/E[j]);
-		}
-
-		for(int j = 0; j < STRIDE; j++){
-			const int idx = i + j;
-			#ifdef IEEE_754
-			if(ISNAN(xX[j]) || ISNAN(alphaX[j]) || ISNAN(betaX[j]) || ISNAN(gammaX[j]) || ISNAN(aX[j]) || ISNAN(bX[j])){
-				throw_warning = true;
-				p[idx] = NAN;
-			} else // XXX: ATTENTION HERE!!
-			#endif
-
-			if(alphaX[j] < 0.0 || alphaX[j] > 1.0
-			   || betaX[j] < 0.0
-			   || gammaX[j] < 0.0
-			   || aX[j] < 0.0
-			   || bX[j] < 0.0)
-			{
-				throw_warning = true;
-				p[idx] = NAN;
-			}
+		#ifdef IEEE_754
+		if(ISNAN(x) || ISNAN(alpha) || ISNAN(beta) || ISNAN(gamma) || ISNAN(a) || ISNAN(b))
+			p[i] = x+alpha+beta+gamma+a+b;
+		else
+		#endif
+		if(alpha < 0.0 || alpha > 1.0
+		   || beta < 0.0
+		   || gamma < 0.0
+		   || a < 0.0
+		   || b < 0.0)
+		{
+			// Concurrency will not cause problems here.
+			throw_warning = true;
+			p[i] = NAN;
+		} else {
+			p[i] = logpdf_kwcwg(x, alpha, beta, gamma, a, b);
 		}
 	}
-
-	for(int i = lim*STRIDE; i < maxN; i++)
-		p[i] = logpdf_kwcwg(
-			GETV(x, i),
-			GETV(alpha, i),
-			GETV(beta, i),
-			GETV(gamma, i),
-			GETV(a, i),
-			GETV(b, i),
-			throw_warning);
 
 	if(!log_prob)
 		p = Rcpp::exp(p);
@@ -291,44 +159,61 @@ NumericVector cpp_dkwcwg(
 
 // [[Rcpp::export]]
 NumericVector cpp_pkwcwg(
-	const NumericVector& x,
-	const NumericVector& alpha,
-	const NumericVector& beta,
-	const NumericVector& gamma,
-	const NumericVector& a,
-	const NumericVector& b,
+	const NumericVector& vx,
+	const NumericVector& valpha,
+	const NumericVector& vbeta,
+	const NumericVector& vgamma,
+	const NumericVector& va,
+	const NumericVector& vb,
 	const bool& lower_tail = true,
 	const bool& log_prob = false
 ){
 
 	if(std::min(
-		{x.length(), alpha.length(), beta.length(),
-		 gamma.length(), a.length(), b.length()}) < 1)
+		{vx.length(), valpha.length(), vbeta.length(),
+		 vgamma.length(), va.length(), vb.length()}) < 1)
 	{
 		return NumericVector(0);
 	}
 
 	int maxN = std::max({
-		x.length(),
-		alpha.length(),
-		beta.length(),
-		gamma.length(),
-		a.length(),
-		b.length()
+		vx.length(),
+		valpha.length(),
+		vbeta.length(),
+		vgamma.length(),
+		va.length(),
+		vb.length()
 	});
 	NumericVector p(maxN);
 
 	bool throw_warning = false;
 
-	for (int i = 0; i < maxN; i++)
-		p[i] = cdf_kwcwg(
-			GETV(x, i),
-			GETV(alpha, i),
-			GETV(beta, i),
-			GETV(gamma, i),
-			GETV(a, i),
-			GETV(b, i),
-			throw_warning);
+	for (int i = 0; i < maxN; i++){
+		const double x = GETV(vx, i);
+		const double alpha = GETV(valpha, i);
+		const double beta = GETV(vbeta, i);
+		const double gamma = GETV(vgamma, i);
+		const double a = GETV(va, i);
+		const double b = GETV(vb, i);
+
+		#ifdef IEEE_754
+		if(ISNAN(x) || ISNAN(alpha) || ISNAN(beta) || ISNAN(gamma) || ISNAN(a) || ISNAN(b))
+			p[i] = x+alpha+beta+gamma+a+b;
+		else
+		#endif
+		if(alpha < 0.0 || alpha > 1.0
+		   || beta < 0.0
+		   || gamma < 0.0
+		   || a < 0.0
+		   || b < 0.0)
+		{
+			// Concurrency will not cause problems here.
+			throw_warning = true;
+			p[i] = NAN;
+		} else {
+			p[i] = cdf_kwcwg(x, alpha, beta, gamma, a, b);
+		}
+	}
 
 	if (!lower_tail)
 		p = 1.0 - p;
@@ -345,32 +230,32 @@ NumericVector cpp_pkwcwg(
 
 // [[Rcpp::export]]
 NumericVector cpp_qkwcwg(
-	const NumericVector& p,
-	const NumericVector& alpha,
-	const NumericVector& beta,
-	const NumericVector& gamma,
-	const NumericVector& a,
-	const NumericVector& b,
+	const NumericVector& vp,
+	const NumericVector& valpha,
+	const NumericVector& vbeta,
+	const NumericVector& vgamma,
+	const NumericVector& va,
+	const NumericVector& vb,
 	const bool& lower_tail = true,
 	const bool& log_prob = false
 ){
 	if(std::min(
-		{p.length(), alpha.length(), beta.length(),
-		 gamma.length(), a.length(), b.length()}) < 1)
+		{vp.length(), valpha.length(), vbeta.length(),
+		 vgamma.length(), va.length(), vb.length()}) < 1)
 	{
 		return NumericVector(0);
 	}
 
 	int maxN = std::max({
-		p.length(),
-		alpha.length(),
-		beta.length(),
-		gamma.length(),
-		a.length(),
-		b.length()
+		vp.length(),
+		valpha.length(),
+		vbeta.length(),
+		vgamma.length(),
+		va.length(),
+		vb.length()
 	});
 	NumericVector q(maxN);
-	NumericVector pp = Rcpp::clone(p);
+	NumericVector pp = Rcpp::clone(vp);
 	
 	bool throw_warning = false;
 
@@ -380,15 +265,32 @@ NumericVector cpp_qkwcwg(
 	if (!lower_tail)
 		pp = 1.0 - pp;
 
-	for (int i = 0; i < maxN; i++)
-		q[i] = invcdf_kwcwg(
-			GETV(pp, i),
-			GETV(alpha, i),
-			GETV(beta, i),
-			GETV(gamma, i),
-			GETV(a, i),
-			GETV(b, i),
-			throw_warning);
+	for (int i = 0; i < maxN; i++){
+		const double p = GETV(pp, i);
+		const double alpha = GETV(valpha, i);
+		const double beta = GETV(vbeta, i);
+		const double gamma = GETV(vgamma, i);
+		const double a = GETV(va, i);
+		const double b = GETV(vb, i);
+
+		#ifdef IEEE_754
+		if(ISNAN(p) || ISNAN(alpha) || ISNAN(beta) || ISNAN(gamma) || ISNAN(a) || ISNAN(b))
+			q[i] = p+alpha+beta+gamma+a+b;
+		else
+		#endif
+		if(alpha < 0.0 || alpha > 1.0
+		   || beta < 0.0
+		   || gamma < 0.0
+		   || a < 0.0
+		   || b < 0.0
+		   || !VALID_PROB(p))
+		{
+			throw_warning = true;
+			q[i] = NAN;
+		} else {
+			q[i] = invcdf_kwcwg(p, alpha, beta, gamma, a, b);
+		}
+	}
 	
 	if (throw_warning)
 		Rcpp::warning("NaNs produced");
@@ -399,15 +301,15 @@ NumericVector cpp_qkwcwg(
 // [[Rcpp::export]]
 NumericVector cpp_rkwcwg(
 	const int& n,
-	const NumericVector& alpha,
-	const NumericVector& beta,
-	const NumericVector& gamma,
-	const NumericVector& a,
-	const NumericVector& b
+	const NumericVector& valpha,
+	const NumericVector& vbeta,
+	const NumericVector& vgamma,
+	const NumericVector& va,
+	const NumericVector& vb
 ){
 	if(std::min(
-		{alpha.length(), beta.length(),
-		 gamma.length(), a.length(), b.length()}) < 1)
+		{valpha.length(), vbeta.length(),
+		 vgamma.length(), va.length(), vb.length()}) < 1)
 	{
 		Rcpp::warning("NAs produced");
 		return NumericVector(n, NA_REAL);
@@ -417,14 +319,30 @@ NumericVector cpp_rkwcwg(
 	
 	bool throw_warning = false;
 
-	for (int i = 0; i < n; i++)
-		x[i] = rng_kwcwg(
-			GETV(alpha, i),
-			GETV(beta, i),
-			GETV(gamma, i),
-			GETV(a, i),
-			GETV(b, i),
-			throw_warning);
+	for (int i = 0; i < n; i++){
+		const double alpha = GETV(valpha, i);
+		const double beta = GETV(vbeta, i);
+		const double gamma = GETV(vgamma, i);
+		const double a = GETV(va, i);
+		const double b = GETV(vb, i);
+
+		#ifdef IEEE_754
+		if(ISNAN(alpha) || ISNAN(beta) || ISNAN(gamma) || ISNAN(a) || ISNAN(b))
+			x[i] = alpha+beta+gamma+a+b;
+		else
+		#endif
+		if(alpha < 0.0 || alpha > 1.0
+		   || beta < 0.0
+		   || gamma < 0.0
+		   || a < 0.0
+		   || b < 0.0)
+		{
+			throw_warning = true;
+			x[i] = NAN;
+		} else {
+			x[i] = rng_kwcwg(alpha, beta, gamma, a, b);
+		}
+	}
 	
 	if (throw_warning)
 		Rcpp::warning("NAs produced");
