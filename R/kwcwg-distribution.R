@@ -26,6 +26,22 @@
 #'    \cdot \bigg\{ 1 - \frac{\alpha^a[1 - \exp[-(\gamma x)^\beta]]^a}{\{ \alpha + (1 - \alpha) \exp[-(\gamma x)^\beta] \}^a} \bigg\}
 #' }
 #'
+#' Cumulative density function
+#' \deqn{
+#'     F(x) = 1 - \bigg\{  1 - \bigg[ \frac{\alpha (1 - \exp[-(\gamma x)^\beta]) }{ \alpha + (1 - \alpha) \exp[-(\gamma x)^\beta] } \bigg]^a \bigg\}^b
+#' }
+#'
+#' Quantile function
+#' \deqn{
+#'    Q(u) = \gamma^{-1} \bigg\{
+#'        \log\bigg[\frac{
+#'            \alpha + (1 - \alpha) \sqrt[a]{1 - \sqrt[b]{1 - u} }
+#'        }{
+#'            \alpha (1 - \sqrt[a]{1 - \sqrt[b]{1 - u} } )
+#'        }\bigg]
+#'    \bigg\}^{1/\beta}, 0 < u < 1
+#' }
+#'
 #' @references
 #' Afify, A.Z., Cordeiro, G.M., Butt, N.S., Ortega, E.M. and
 #' Suzuki, A.K. (2017). A new lifetime model with variable shapes for
