@@ -1,4 +1,4 @@
-context("KW-CWG distribution")
+context("Kw-CWG distribution")
 require(elfDistr)
 
 func_generator = function(alpha, beta, gamma, a, b){

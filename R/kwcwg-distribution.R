@@ -1,9 +1,10 @@
 
 
-#' KW-CWG distribution
+#' Kumaraswamy Complementary Weibull Geometric probability distribution
 #'
 #' Density, distribution function, quantile function and random generation
-#' for the KW-CWG distribution.
+#' for the Kumaraswamy Complementary Weibull Geometric (Kw-CWG) probability
+#' distribution.
 #'
 #' @param x,q	          vector of quantiles.
 #' @param p	              vector of probabilities.
@@ -30,8 +31,8 @@
 #' Suzuki, A.K. (2017). A new lifetime model with variable shapes for
 #' the hazard rate. Brazilian Journal of Probability and Statistics
 #' 
-#' @name KW-CWG
-#' @aliases KW-CWG
+#' @name Kw-CWG
+#' @aliases Kw-CWG
 #' @aliases kwcwg
 #'
 #' @keywords distribution
@@ -49,7 +50,7 @@ dkwcwg <- function(x, alpha, beta, gamma, a, b, log = FALSE) {
 }
 
 
-#' @rdname KW-CWG
+#' @rdname Kw-CWG
 #' @export
 
 pkwcwg <- function(q, alpha, beta, gamma, a, b, lower.tail = TRUE, log.p = FALSE) {
@@ -57,7 +58,7 @@ pkwcwg <- function(q, alpha, beta, gamma, a, b, lower.tail = TRUE, log.p = FALSE
 }
 
 
-#' @rdname KW-CWG
+#' @rdname Kw-CWG
 #' @export
 
 qkwcwg <- function(p, alpha, beta, gamma, a, b, lower.tail = TRUE, log.p = FALSE) {
@@ -65,7 +66,7 @@ qkwcwg <- function(p, alpha, beta, gamma, a, b, lower.tail = TRUE, log.p = FALSE
 }
 
 
-#' @rdname KW-CWG
+#' @rdname Kw-CWG
 #' @export
 
 rkwcwg <- function(n, alpha, beta, gamma, a, b) {

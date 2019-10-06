@@ -1,5 +1,5 @@
 Package: elfDistr
-Title: KW-CWG Distribution
+Title: Kumaraswamy Complementary Weibull Geometric (Kw-CWG) probability distribution
 Version: 1.0.0
 Authors@R: c(
     person(given = "Matheus H. J.",
@@ -12,8 +12,9 @@ Authors@R: c(
            email = "suzuki@icmc.usp.br")
     )
 Description: Density, distribution function, quantile function
-    and random generation for the KW-CWG lifetime distribution
-    proposed in Afify, A.Z. et al (2017) <doi:10.1214/16-BJPS322>.
+    and random generation for the Kumaraswamy Complementary Weibull
+    Geometric (Kw-CWG) lifetime probability distribution proposed
+    in Afify, A.Z. et al (2017) <doi:10.1214/16-BJPS322>.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

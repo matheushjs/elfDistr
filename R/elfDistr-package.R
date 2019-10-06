@@ -1,8 +1,9 @@
 
-#' KW-CWG Distribution
+#' Kumaraswamy Complementary Weibull Geometric (Kw-CWG) probability distribution
 #'
 #' Density, distribution function, quantile function and random
-#' generation for the KW-CWG lifetime distribution.
+#' generation for the Kumaraswamy Complementary Weibull Geometric
+#' probability distribution (Kw-CWG) lifetime distribution.
 #' 
 #' @details
 #' 

@@ -17,7 +17,7 @@ using Rcpp::Rcout;
 
 
 /*
- *  KW-CWG distribution
+ *  Kw-CWG distribution
  *
  *  Values:
  *  x
@@ -29,16 +29,15 @@ using Rcpp::Rcout;
  *  a >= 0
  *  b >= 0
  *
- * Recheck this
- *   z = alpha**a * beta * gamma * a * b * (gamma * x)**(beta-1) * exp(-(gamma*x)**beta) *
- *   (
- *      (1 - exp(-(gamma*x)**beta))**(a-1) /
- *      (alpha + (1 - alpha)*exp(-(gamma*x)**beta))**(a+1)
- *   ) *
- *   (
- *     1 - (alpha**a*(1 - exp(-(gamma*x)**beta))**a) /
- *         (alpha + (1-alpha)*exp(-(gamma*x)**beta))**a
- *   )**(b-1)
+ *  z = alpha**a * beta * gamma * a * b * (gamma * x)**(beta-1) * exp(-(gamma*x)**beta) *
+ *  (
+ *     (1 - exp(-(gamma*x)**beta))**(a-1) /
+ *     (alpha + (1 - alpha)*exp(-(gamma*x)**beta))**(a+1)
+ *  ) *
+ *  (
+ *    1 - (alpha**a*(1 - exp(-(gamma*x)**beta))**a) /
+ *        (alpha + (1-alpha)*exp(-(gamma*x)**beta))**a
+ *  )**(b-1)
  */
 
 inline double logpdf_kwcwg(
@@ -166,12 +165,10 @@ NumericVector cpp_dkwcwg(
 	const unsigned int bL = b.length();
 	
 	if(std::min({ xL, alphaL, betaL, gammaL, aL, bL }) < 1)
-	{
 		return NumericVector(0);
-	}
 
 	int maxN = std::max({ xL, alphaL, betaL, gammaL, aL, bL });
-	NumericVector p(maxN);
+	NumericVector p = Rcpp::no_init(maxN);
 	
 	bool throw_warning = false;
 
