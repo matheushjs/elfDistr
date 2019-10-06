@@ -1,5 +1,5 @@
 
-#' Kumaraswamy Complementary Weibull Geometric (Kw-CWG) probability distribution
+#' Kumaraswamy Complementary Weibull Geometric (Kw-CWG) Probability Distribution
 #'
 #' Density, distribution function, quantile function and random
 #' generation for the Kumaraswamy Complementary Weibull Geometric

@@ -1,5 +1,5 @@
 Package: elfDistr
-Title: Kumaraswamy Complementary Weibull Geometric (Kw-CWG) probability distribution
+Title: Kumaraswamy Complementary Weibull Geometric (Kw-CWG) Probability Distribution
 Version: 1.0.0
 Authors@R: c(
     person(given = "Matheus H. J.",
