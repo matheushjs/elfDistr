@@ -120,6 +120,7 @@ NumericVector cpp_dkwcwg(
 	
 	bool throw_warning = false;
 
+	#pragma omp parallel for
 	for(int i = 0; i < maxN; i++){
 		const double x = GETV(vx, i);
 		const double alpha = GETV(valpha, i);
@@ -188,6 +189,7 @@ NumericVector cpp_pkwcwg(
 
 	bool throw_warning = false;
 
+	#pragma omp parallel for
 	for (int i = 0; i < maxN; i++){
 		const double x = GETV(vx, i);
 		const double alpha = GETV(valpha, i);
@@ -265,6 +267,7 @@ NumericVector cpp_qkwcwg(
 	if (!lower_tail)
 		pp = 1.0 - pp;
 
+	#pragma omp parallel for
 	for (int i = 0; i < maxN; i++){
 		const double p = GETV(pp, i);
 		const double alpha = GETV(valpha, i);
@@ -285,6 +288,7 @@ NumericVector cpp_qkwcwg(
 		   || b < 0.0
 		   || !VALID_PROB(p))
 		{
+			// Concurrency wont cause problems
 			throw_warning = true;
 			q[i] = NAN;
 		} else {
@@ -319,6 +323,7 @@ NumericVector cpp_rkwcwg(
 	
 	bool throw_warning = false;
 
+	#pragma omp parallel for
 	for (int i = 0; i < n; i++){
 		const double alpha = GETV(valpha, i);
 		const double beta = GETV(vbeta, i);
@@ -337,6 +342,7 @@ NumericVector cpp_rkwcwg(
 		   || a < 0.0
 		   || b < 0.0)
 		{
+			// Concurrency won't cause problems
 			throw_warning = true;
 			x[i] = NAN;
 		} else {
