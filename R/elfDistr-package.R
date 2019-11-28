@@ -25,9 +25,4 @@
 #' 
 #' @useDynLib elfDistr, .registration = TRUE 
 #' @importFrom Rcpp sourceCpp
-#' 
-#' @importFrom stats pgamma qgamma rgamma
-#' @importFrom stats pnorm qnorm rnorm
-#' @importFrom stats rpois
-#' @importFrom stats qchisq rchisq
 NULL
