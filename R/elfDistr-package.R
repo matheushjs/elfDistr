@@ -1,9 +1,10 @@
 
-#' Kumaraswamy Complementary Weibull Geometric (Kw-CWG) Probability Distribution
+#' Kumaraswamy Complementary Weibull Geometric and Generalized Gamma Probability Distributions
 #'
 #' Density, distribution function, quantile function and random
 #' generation for the Kumaraswamy Complementary Weibull Geometric
-#' probability distribution (Kw-CWG) lifetime distribution.
+#' probability distribution (Kw-CWG) and the Generalized Gamma
+#' lifetime distributions.
 #' 
 #' @details
 #' 
@@ -18,7 +19,8 @@
 #' (e.g. for non-integers in discrete distributions, or for
 #' negative values in functions with non-negative support).
 #' 
-#' All the functions vectorized and coded in C++ using \pkg{Rcpp}.
+#' The most complex distributions were vectorized and coded in C++ using \pkg{Rcpp}.
+#' Simpler distributions were coded directly in R, as this proved itself most efficient.
 #' 
 #' @docType package
 #' @name elfDistr

@@ -2,8 +2,11 @@
 
 export(dggamma)
 export(dkwcwg)
+export(pggamma)
 export(pkwcwg)
+export(qggamma)
 export(qkwcwg)
+export(rggamma)
 export(rkwcwg)
 importFrom(Rcpp,sourceCpp)
 useDynLib(elfDistr, .registration = TRUE)
