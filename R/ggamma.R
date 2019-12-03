@@ -99,7 +99,7 @@ qggamma = function(p, a, b, k, lower.tail = TRUE, log.p = FALSE){
 	if(log.p) p = exp(p);
 	if(!lower.tail) p = 1 - p;
 	quantile = qgamma(p, shape=k, rate=1); # shape is alpha, rate is beta
-	quantile = (quantile * a) ** (1/b);
+	quantile = a * quantile**(1/b);
 	return(quantile);
 }
 

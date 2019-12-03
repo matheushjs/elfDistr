@@ -1,4 +1,5 @@
 require(Rcpp)
+require(microbenchmark)
 
 dggamma1 = function(x, a, b, k, log=F){
 	result = log(b) - lgamma(k) + (b*k - 1)*log(x) - (b*k)*log(a) - (x/a)**b;
