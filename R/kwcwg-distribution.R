@@ -1,4 +1,5 @@
 
+
 #' Kumaraswamy Complementary Weibull Geometric Probability Distribution
 #'
 #' Density, distribution function, quantile function and random generation
