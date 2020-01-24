@@ -14,33 +14,24 @@ kwcwg.pdf = function(x, alpha, beta, gamma, a, b){
 	){
 		return(rep(0, length(x)));
 	}
-	
-	# Original function
-	# return(
-	#	alpha**a * beta * gamma * a * b * (gamma * x)**(beta-1) * exp(-(gamma*x)**beta) *
-	#	(
-	#		(1 - exp(-(gamma*x)**beta))**(a-1) /
-	#		(alpha + (1 - alpha)*exp(-(gamma*x)**beta))**(a+1)
-	#	) *
-	#	(
-	#		1 -
-	#		(alpha**a*(1 - exp(-(gamma*x)**beta))**a) /
-	#		(alpha + (1-alpha)*exp(-(gamma*x)**beta))**a
-	#	)**(b-1)
-	#)
-	
+
 	# A common term in the equation
-	aux1 = exp(-(gamma*x)**beta)
-	
-	# Here we will factor f(x) as being A * (B/C) * (1 - D/E)^(b-1)
-	A = alpha**a * beta * gamma * a * b * (gamma * x)**(beta-1) * aux1
-	B = 1 - aux1
-	C = alpha + (1 - alpha)*aux1
-	D = (alpha**a * (1 - aux1)**a)
-	E = (alpha + (1-alpha)*aux1)**a
-	result = A * (B**(a-1)/C**(a+1)) * (1 - D/E)**(b-1)
-	
-	return(result)
+	#aux1 = exp(-(gamma*x)**beta)
+	#A = alpha**a * beta * gamma * a * b * (gamma * x)**(beta-1) * aux1
+	#B = 1 - aux1
+	#C = alpha + (1 - alpha)*aux1
+	#D = (alpha**a * (1 - aux1)**a)
+	#E = (alpha + (1-alpha)*aux1)**a
+	#result = A * (B**(a-1)/C**(a+1)) * (1 - D/E)**(b-1)
+
+	# Common term in the equation
+	aux1 = (gamma*x)**beta;        # (gamma*x)^beta
+	aux2 = exp(-aux1);             # exp[ -(gamma*x)^beta ]
+	aux3 = alpha + aux2*(1-alpha); # { alpha + (1-alpha)*exp[ -(gamma*x)^beta ] }
+	cdf_g = alpha*(1 - aux2) / aux3;
+	pdf_g = (alpha*beta*gamma*aux1/(gamma*x)*aux2) / (aux3*aux3);
+
+	return(log(a) + log(b) + log(pdf_g) + (a-1)*log(cdf_g) + (b-1)*log(1 - cdf_g**a));
 }
 
 test_that("Integrates to 1", {
@@ -94,8 +85,8 @@ test_that("random number generation", {
 	expect_equal(sampleMean, expected, tolerance=0.05)
 });
 
-#require(microbenchmark)
-#
+require(microbenchmark)
+
 #test_that("Benchmark", {
 #	savedOptions = options()
 #	setOption("width", 150)
@@ -106,7 +97,8 @@ test_that("random number generation", {
 #		kwcwg.pdf(1, 0.5, 1, 1, 1, 1),
 #		dkwcwg(1, 0.5, 1, 1, 1, 1),
 #		unit="ms",
-#		control=list(warmup=1000)
+#		control=list(warmup=1000),
+#		times=1000
 #	)
 #	cat("\n\n============================\n")
 #	result = summary(result)
@@ -117,7 +109,8 @@ test_that("random number generation", {
 #		kwcwg.pdf(x, 0.5, 1, 1, c(1, 2, 3), 1),
 #		dkwcwg(x, 0.5, 1, 1, c(1, 2, 3), 1),
 #		unit="s",
-#		control=list(warmup=10)
+#		control=list(warmup=10),
+#		times=1000
 #	)
 #	cat("\n\n============================\n")
 #	result = summary(result)

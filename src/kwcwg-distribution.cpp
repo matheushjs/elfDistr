@@ -40,6 +40,7 @@ using Rcpp::Rcout;
  *  )**(b-1)
  */
 
+/*
 inline double logpdf_kwcwg(
 	double x, double alpha, double beta,
 	double gamma, double a, double b)
@@ -57,6 +58,21 @@ inline double logpdf_kwcwg(
 	// return A * (B**(a-1)/C**(a+1)) * (1 - D/E)**(b-1)
 
 	return log(A) + (a-1)*log(B) - (a+1)*log(C) + (b-1)*log(1 - D/E);
+}
+*/
+
+inline double logpdf_kwcwg(
+	double x, double alpha, double beta,
+	double gamma, double a, double b)
+{
+	// Common term in the equation
+	double aux1 = pow(gamma*x, beta); // (gamma*x)^beta
+	double aux2 = exp(-aux1);         // exp[ -(gamma*x)^beta ]
+	double aux3 = alpha + aux2*(1-alpha); // { alpha + (1-alpha)*exp[ -(gamma*x)^beta ] }
+	double cdf_g = alpha*(1 - aux2) / aux3;
+	double pdf_g = (alpha*beta*gamma*aux1/(gamma*x)*aux2) / (aux3*aux3);
+
+	return log(a) + log(b) + log(pdf_g) + (a-1)*log(cdf_g) + (b-1)*log(1 - pow(cdf_g, a));
 }
 
 inline double cdf_kwcwg(
