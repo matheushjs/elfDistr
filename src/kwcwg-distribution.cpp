@@ -145,11 +145,6 @@ NumericVector cpp_dkwcwg(
 		const double a = GETV(va, i);
 		const double b = GETV(vb, i);
 
-		#ifdef IEEE_754
-		if(ISNAN(x) || ISNAN(alpha) || ISNAN(beta) || ISNAN(gamma) || ISNAN(a) || ISNAN(b))
-			p[i] = x+alpha+beta+gamma+a+b;
-		else
-		#endif
 		if(alpha < 0.0 || alpha > 1.0
 		   || beta < 0.0
 		   || gamma < 0.0
