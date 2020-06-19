@@ -127,20 +127,28 @@ NumericVector cpp_dkwcwg(
 	bool throw_warning = false;
 
 	// Bounds verifications
-	for(double a: valpha){
-		if(a < 0.0 || a > 1.0) throw_warning = true;
-	}
-	for(double b: vbeta){
-		if(b < 0.0) throw_warning = true;
-	}
-	for(double g: vgamma){
-		if(g < 0.0) throw_warning = true;
-	}
-	for(double a: va){
-		if(a < 0.0) throw_warning = true;
-	}
-	for(double b: vb){
-		if(b < 0.0) throw_warning = true;
+	#pragma omp parallel sections
+	{
+		#pragma omp section
+		for(double a: valpha){
+			if(a < 0.0 || a > 1.0) throw_warning = true;
+		}
+		#pragma omp section
+		for(double b: vbeta){
+			if(b < 0.0) throw_warning = true;
+		}
+		#pragma omp section
+		for(double g: vgamma){
+			if(g < 0.0) throw_warning = true;
+		}
+		#pragma omp section
+		for(double a: va){
+			if(a < 0.0) throw_warning = true;
+		}
+		#pragma omp section
+		for(double b: vb){
+			if(b < 0.0) throw_warning = true;
+		}
 	}
 
 	int maxN = std::max({
