@@ -124,6 +124,25 @@ NumericVector cpp_dkwcwg(
 		return NumericVector(0);
 	}
 
+	bool throw_warning = false;
+
+	// Bounds verifications
+	for(double a: valpha){
+		if(a < 0.0 || a > 1.0) throw_warning = true;
+	}
+	for(double b: vbeta){
+		if(b < 0.0) throw_warning = true;
+	}
+	for(double g: vgamma){
+		if(g < 0.0) throw_warning = true;
+	}
+	for(double a: va){
+		if(a < 0.0) throw_warning = true;
+	}
+	for(double b: vb){
+		if(b < 0.0) throw_warning = true;
+	}
+
 	int maxN = std::max({
 		vx.length(),
 		valpha.length(),
@@ -133,8 +152,14 @@ NumericVector cpp_dkwcwg(
 		vb.length()
 	});
 	NumericVector p(maxN);
-	
-	bool throw_warning = false;
+
+	if(throw_warning){
+		Rcpp::warning("NaNs produced");
+		for(int i = 0; i < maxN; i++){
+			p[i] = NAN;
+		}
+		return p;
+	}
 
 	#pragma omp parallel for
 	for(int i = 0; i < maxN; i++){
@@ -145,26 +170,12 @@ NumericVector cpp_dkwcwg(
 		const double a = GETV(va, i);
 		const double b = GETV(vb, i);
 
-		if(alpha < 0.0 || alpha > 1.0
-		   || beta < 0.0
-		   || gamma < 0.0
-		   || a < 0.0
-		   || b < 0.0)
-		{
-			// Concurrency will not cause problems here.
-			throw_warning = true;
-			p[i] = NAN;
-		} else {
-			p[i] = logpdf_kwcwg(x, alpha, beta, gamma, a, b);
-		}
+		p[i] = logpdf_kwcwg(x, alpha, beta, gamma, a, b);
 	}
 
 	if(!log_prob)
 		p = Rcpp::exp(p);
 	
-	if(throw_warning)
-		Rcpp::warning("NaNs produced");
-
 	return p;
 }
 
