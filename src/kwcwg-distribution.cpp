@@ -169,16 +169,9 @@ NumericVector cpp_dkwcwg(
 		return p;
 	}
 
-	#pragma omp parallel for
+	#pragma omp parallel for schedule(dynamic,64)
 	for(int i = 0; i < maxN; i++){
-		const double x = GETV(vx, i);
-		const double alpha = GETV(valpha, i);
-		const double beta = GETV(vbeta, i);
-		const double gamma = GETV(vgamma, i);
-		const double a = GETV(va, i);
-		const double b = GETV(vb, i);
-
-		p[i] = logpdf_kwcwg(x, alpha, beta, gamma, a, b);
+		p[i] = logpdf_kwcwg(GETV(vx, i), GETV(valpha, i), GETV(vbeta, i), GETV(vgamma, i), GETV(va, i), GETV(vb, i));
 	}
 
 	if(!log_prob)
