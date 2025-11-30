@@ -20,9 +20,6 @@
 #' 
 #' All the functions vectorized and coded in C++ using \pkg{Rcpp}.
 #' 
-#' @docType package
-#' @name elfDistr
-#' 
 #' @useDynLib elfDistr, .registration = TRUE 
 #' @importFrom Rcpp sourceCpp
 #' 
@@ -30,4 +27,4 @@
 #' @importFrom stats pnorm qnorm rnorm
 #' @importFrom stats rpois
 #' @importFrom stats qchisq rchisq
-NULL
+"_PACKAGE"
