@@ -1,6 +1,6 @@
 Package: elfDistr
 Title: Kumaraswamy Complementary Weibull Geometric (Kw-CWG) Probability Distribution
-Version: 1.0.0
+Version: 1.0.1
 Authors@R: c(
     person(given = "Matheus H. J.",
            family = "Saldanha",
@@ -17,14 +17,12 @@ Description: Density, distribution function, quantile function
     in Afify, A.Z. et al (2017) <doi:10.1214/16-BJPS322>.
 License: MIT + file LICENSE
 Encoding: UTF-8
-LazyData: true
 URL: https://github.com/matheushjs/elfDistr
 BugReports: https://github.com/matheushjs/elfDistr/issues
-RoxygenNote: 6.1.1
+RoxygenNote: 7.3.3
 Depends: R (>= 3.1.0)
 LinkingTo: Rcpp
 Imports: Rcpp
-SystemRequirements: C++11
 NeedsCompilation: yes
 Suggests: 
     testthat
