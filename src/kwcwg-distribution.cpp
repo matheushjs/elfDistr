@@ -1,5 +1,4 @@
 #include <Rcpp.h>
-// [[Rcpp::plugins(cpp11)]]
 // [[Rcpp::plugins(openmp)]]
 
 using std::pow;
