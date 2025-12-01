@@ -5,6 +5,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // cpp_dkwcwg
 NumericVector cpp_dkwcwg(const NumericVector& vx, const NumericVector& valpha, const NumericVector& vbeta, const NumericVector& vgamma, const NumericVector& va, const NumericVector& vb, const bool& log_prob);
 RcppExport SEXP _elfDistr_cpp_dkwcwg(SEXP vxSEXP, SEXP valphaSEXP, SEXP vbetaSEXP, SEXP vgammaSEXP, SEXP vaSEXP, SEXP vbSEXP, SEXP log_probSEXP) {
