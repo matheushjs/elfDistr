@@ -85,7 +85,7 @@ test_that("random number generation", {
 	expect_equal(sampleMean, expected, tolerance=0.05)
 });
 
-require(microbenchmark)
+# require(microbenchmark)
 
 #test_that("Benchmark", {
 #	savedOptions = options()
